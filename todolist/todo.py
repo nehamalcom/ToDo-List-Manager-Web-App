@@ -14,7 +14,7 @@ def index():
     lists = db.execute(
         'SELECT l.id, author_id, created, title, body, username FROM list l JOIN user u ON l.author_id = u.id ORDER BY created DESC'
     ).fetchall()
-    return render_template('todo/index.html', posts=lists)
+    return render_template('todo/index.html', lists=lists)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required

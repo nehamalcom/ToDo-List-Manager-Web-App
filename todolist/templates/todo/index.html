@@ -16,7 +16,7 @@
             <div class="about">by {{ list['username'] }} on {{ list['created'].strftime('%Y-%m-%d') }}</div>
         </div>
         {% if g.user['id'] == list['author_id'] %}
-        <a class="action" href="{{ url_for('list.update', id=list['id']) }}">Edit</a>
+        <a class="action" href="{{ url_for('todo.update', id=list['id']) }}">Edit</a>
         {% endif %}
     </header>
     <p class="body">{{ list['body'] }}</p>

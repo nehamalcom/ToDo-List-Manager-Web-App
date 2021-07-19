@@ -49,7 +49,7 @@ def get_list(id, check_author=True):
     
     return list
 
-@bp.route('/int:id/update', methods=('GET', 'POST'))
+@bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
     list = get_list(id)
@@ -71,7 +71,7 @@ def update(id):
             )
             db.commit()
             return redirect(url_for('todo.index'))
-    return render_template('todo/update.html', post=list)
+    return render_template('todo/update.html', list=list)
 
 @bp.route('/<int:id>/delete', methods=('POST', ))
 @login_required
@@ -80,4 +80,4 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM list WHERE id = ?', (id, ))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('todo.index'))

@@ -40,6 +40,7 @@ CREATE TABLE item (
     date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_due TIMESTAMP NOT NULL,
     description TEXT,
-    list INTEGER,
-    FOREIGN KEY (list) REFERENCES list (id)
+    listid INTEGER,
+    completed INTEGER,
+    FOREIGN KEY (listid) REFERENCES list (id)
 );

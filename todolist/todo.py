@@ -86,15 +86,18 @@ def delete(id):
     return redirect(url_for('todo.index'))
 
 def get_item(listid, itemid, check_author=True):
-    list = get_db().execute(
+    item = get_db().execute(
         'SELECT id, title, date_created, date_due, description, listid, completed FROM item WHERE listid = ? AND id = ?', (listid, itemid)
     ).fetchone()
-    if list is None:
+    if item is None:
         abort(404, f"Item id {itemid} doesn't exist.")
+    list = get_db().execute(
+        'SELECT author_id, i.id AS itemid, i.title, date_created, date_due, description, listid, completed FROM item i JOIN list l ON listid = l.id WHERE listid = ? AND i.id = ?', (listid, itemid)
+    ).fetchone()
     if check_author and list['author_id']!=g.user['id']:
         abort(403)
     
-    return list
+    return item
 
 
 @bp.route('/<int:listid>')
@@ -102,7 +105,7 @@ def get_item(listid, itemid, check_author=True):
 def itemsindex(listid):
     db = get_db()
     itemsoflist = db.execute(
-        'SELECT l.id, author_id, created, l.title, body, i.id, i.title, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY completed, date_due',(listid, )
+        'SELECT l.id AS listid, author_id, created, l.title, body, i.id AS itemid, i.title, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY completed, date_due',(listid, )
     ).fetchall()
     return render_template('todo/itemsindex.html', items=itemsoflist, listid=listid)
 
@@ -138,7 +141,7 @@ def createitem(listid):
 @bp.route('/<int:listid>/<int:itemid>/update', methods=('GET', 'POST'))
 @login_required
 def updateitem(listid, itemid):
-    list = get_list(listid)
+    item = get_item(listid, itemid)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -160,7 +163,7 @@ def updateitem(listid, itemid):
             )
             db.commit()
             return redirect(url_for('todo.itemsindex', listid = listid))
-    return render_template('todo/updateitem.html', list=list)
+    return render_template('todo/updateitem.html', item=item)
 
 
 

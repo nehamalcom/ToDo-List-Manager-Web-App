@@ -17,7 +17,7 @@
             <div class="completed">completed: {{ item['completed'] }}</div>
         </div>
         {% if g.user['id'] == item['author_id'] %}
-        <a class="action" href="{{ url_for('todo.updateitem', itemid=item['id'], listid=item['id']) }}">Edit Item</a>
+        <a class="action" href="{{ url_for('todo.updateitem', itemid=item['itemid'], listid=item['listid']) }}">Edit Item</a>
         {% endif %}
     </header>
     <p class="body">{{ item['description'] }}</p>

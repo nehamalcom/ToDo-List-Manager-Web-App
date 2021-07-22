@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Edit "{{ list['title'] }} {{ item}}"{% endblock %}</h1>
+<h1>{% block title %}Edit "{{ item['title'] }} {{item['description']}}"{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
     <input type="submit" value="Save">
 </form>
 <hr>
-<form action="{{ url_for('todo.deleteitem', listid=item['l.id'], itemid=['i.id']) }}" method="post">
+<form action="{{ url_for('todo.deleteitem', listid=item['listid'], itemid=['itemid']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 </form>
 {% endblock %}

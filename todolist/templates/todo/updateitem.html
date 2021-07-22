@@ -6,14 +6,16 @@
 
 {% block content %}
 <form method="post">
-    <label for="title">Title</label>
+    <label for="title">Item Title</label>
     <input name="title" id="title" value ="{{ request.form['title'] or item['title'] }}" required>
+    <!--<label for="datedue">Date Due</label>
+    <input type="date" name="datedue" id="datedue" value="{{ request.form['date_due'] }}" required>-->
     <label for="description">Description</label>
     <textarea name="description" id="description">{{ request.form['description'] or item['description'] }}</textarea>
     <input type="submit" value="Save">
 </form>
 <hr>
-<form action="{{ url_for('todo.deleteitem', listid=item['listid'], itemid=['itemid']) }}" method="post">
+<form action="{{ url_for('todo.deleteitem', itemid=item['itemid'], listid=item['listid']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 </form>
 {% endblock %}

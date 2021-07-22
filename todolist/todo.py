@@ -87,7 +87,7 @@ def delete(id):
 
 def get_item(listid, itemid, check_author=True):
     item = get_db().execute(
-        'SELECT id, title, date_created, date_due, description, listid, completed FROM item WHERE listid = ? AND id = ?', (listid, itemid)
+        'SELECT id AS itemid, title, date_created, date_due, description, listid, completed FROM item WHERE listid = ? AND id = ?', (listid, itemid)
     ).fetchone()
     if item is None:
         abort(404, f"Item id {itemid} doesn't exist.")
@@ -146,20 +146,21 @@ def updateitem(listid, itemid):
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
-        date_due = request.form['date_due']
+        #date_due = request.form['datedue']
         error = None
 
         if not title:
             error = 'Title is required.'
-        if not date_due:
-            error = 'Date due is required.'
+        #if not date_due:
+        #    error = 'Date due is required.'
         
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'UPDATE item SET title = ?, description = ? WHERE listid = ? AND itemid = ?', (title, description, listid, itemid)
+                #'UPDATE item SET title = ?, description = ?, date_due = ? WHERE listid = ? AND id = ?', (title, description, date_due, listid, itemid)
+                'UPDATE item SET title = ?, description = ? WHERE listid = ? AND id = ?', (title, description, listid, itemid)
             )
             db.commit()
             return redirect(url_for('todo.itemsindex', listid = listid))
@@ -170,9 +171,9 @@ def updateitem(listid, itemid):
 @bp.route('/<int:listid>/<int:itemid>/delete', methods=('POST', ))
 @login_required
 def deleteitem(listid, itemid):
-    get_list(listid)
-    get_item(itemid)
+    list = get_list(listid)
+    item = get_item(listid, itemid)
     db = get_db()
-    db.execute('DELETE FROM item WHERE listid = ? AND itemid = ?', (listid, itemid))
+    db.execute('DELETE FROM item WHERE listid = ? AND id = ?', (listid, itemid))
     db.commit()
     return redirect(url_for('todo.itemsindex', listid=listid))

@@ -39,8 +39,8 @@ hr {
 .flash { 
     margin: 1em 0; 
     padding: 1em; 
-    background: #235979; 
-    border: 1px solid #00385e; 
+    background: #cb86a4; 
+    border: 1px solid #870000; 
 }
 .list > header { 
     display: flex; 
@@ -61,6 +61,27 @@ hr {
 .list .body { 
     white-space: pre-line; 
 }
+
+.item > header { 
+    display: flex; 
+    align-items: flex-end; 
+    font-size: 0.85em; 
+}
+.item > header > div:first-of-type { 
+    flex: auto; 
+}
+.item > header h1 { 
+    font-size: 1.5em; 
+    margin-bottom: 0; 
+}
+.item .about { 
+    color: slategray; 
+    font-style: italic; 
+}
+.item .body { 
+    white-space: pre-line; 
+}
+
 .content:last-child { 
     margin-bottom: 0; 
 }

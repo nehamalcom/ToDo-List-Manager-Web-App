@@ -26,7 +26,7 @@ CREATE TABLE list (
     created DATE NOT NULL DEFAULT CURRENT_DATE,
     title TEXT NOT NULL,
     body TEXT NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES user (id)
+    FOREIGN KEY (author_id) REFERENCES user (id) ON DELETE CASCADE
 );
 
 /*
@@ -43,5 +43,5 @@ CREATE TABLE item (
     description TEXT,
     listid INTEGER,
     completed INTEGER,
-    FOREIGN KEY (listid) REFERENCES list (id)
+    FOREIGN KEY (listid) REFERENCES list (id) ON DELETE CASCADE
 );

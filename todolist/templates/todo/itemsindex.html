@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %} {{items['l.title']}} {% endblock %}</h1>
+<h1>{% block title %} {{listtitle[0]}} {% endblock %}</h1>
 {% if g.user %}
 <a class="action" href="{{ url_for('todo.createitem', listid = listid) }}">New Item</a>
 {% endif %}
@@ -12,7 +12,7 @@
 <article class="item">
     <header>
         <div>
-            <h1>{{ item['i.title'] }}</h1>
+            <h1>{{ item['itemtitle'] }}</h1>
             <div class="about">due on {{ item['date_due'].strftime('%Y-%m-%d') }}</div>
             <div class="completed">completed: {{ item['completed'] }}</div>
         </div>

@@ -105,9 +105,12 @@ def get_item(listid, itemid, check_author=True):
 def itemsindex(listid):
     db = get_db()
     itemsoflist = db.execute(
-        'SELECT l.id AS listid, author_id, created, l.title, body, i.id AS itemid, i.title, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY completed, date_due',(listid, )
+        'SELECT l.id AS listid, author_id, created, l.title AS listtitle, body, i.id AS itemid, i.title AS itemtitle, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY completed, date_due',(listid, )
     ).fetchall()
-    return render_template('todo/itemsindex.html', items=itemsoflist, listid=listid)
+    listtitle = db.execute(
+        'SELECT title FROM list WHERE id = ?',(listid, )
+    ).fetchone()
+    return render_template('todo/itemsindex.html', items=itemsoflist, listid=listid, listtitle=listtitle)
 
 
 @bp.route('/<int:listid>/createitem', methods=('GET', 'POST'))

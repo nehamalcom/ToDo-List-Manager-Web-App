@@ -9,10 +9,12 @@ from todolist.db import get_db
 bp = Blueprint('todo', __name__)
 
 @bp.route('/')
+@login_required
 def index():
     db = get_db()
+    userid = g.user['id']
     lists = db.execute(
-        'SELECT l.id, author_id, created, title, body, username FROM list l JOIN user u ON l.author_id = u.id ORDER BY created DESC'
+        'SELECT l.id, author_id, created, title, body, username FROM list l JOIN user u ON l.author_id = u.id WHERE u.id = ? ORDER BY created DESC',(userid, )
     ).fetchall()
     return render_template('todo/index.html', lists=lists)
 

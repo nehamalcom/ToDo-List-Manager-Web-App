@@ -12,6 +12,10 @@
     <input type="date" name="datedue" id="datedue" value="{{ request.form['date_due'] }}" required>-->
     <label for="description">Description</label>
     <textarea name="description" id="description">{{ request.form['description'] or item['description'] }}</textarea>
+    <div class="form-check-inline">
+        <input type="radio" name="options" id="completed" value="completed"> Completed </input><br>
+        <input type="radio" name="options" id="option2" value="notcompleted"> Not Completed </input><br>
+      </div>
     <input type="submit" value="Save">
 </form>
 <hr>

@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from todolist.auth import login_required
 from todolist.db import get_db
+import datetime
 
 bp = Blueprint('todo', __name__)
 
@@ -107,7 +108,7 @@ def get_item(listid, itemid, check_author=True):
 def itemsindex(listid):
     db = get_db()
     itemsoflist = db.execute(
-        'SELECT l.id AS listid, author_id, created, l.title AS listtitle, body, i.id AS itemid, i.title AS itemtitle, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY completed, date_due',(listid, )
+        'SELECT l.id AS listid, author_id, created, l.title AS listtitle, body, i.id AS itemid, i.title AS itemtitle, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE listid = ? ORDER BY date_due',(listid, )
     ).fetchall()
     listtitle = db.execute(
         'SELECT title FROM list WHERE id = ?',(listid, )
@@ -123,7 +124,6 @@ def createitem(listid):
         description = request.form['description']
         date_due = request.form['date_due']
         listid = listid
-        completed = 0
         error = None
         
         if not title:
@@ -136,7 +136,7 @@ def createitem(listid):
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO item (title, date_due, description, listid, completed) VALUES (?, ?, ?, ?, ?)', (title, date_due, description, listid, completed)
+                'INSERT INTO item (title, date_due, description, listid) VALUES (?, ?, ?, ?)', (title, date_due, description, listid)
             )
             db.commit()
             return redirect(url_for('todo.itemsindex', listid=listid))
@@ -151,6 +151,7 @@ def updateitem(listid, itemid):
     if request.method == 'POST':
         title = request.form['title']
         description = request.form['description']
+        doneornot =  request.form['options']
         #date_due = request.form['datedue']
         error = None
 
@@ -163,10 +164,17 @@ def updateitem(listid, itemid):
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                #'UPDATE item SET title = ?, description = ?, date_due = ? WHERE listid = ? AND id = ?', (title, description, date_due, listid, itemid)
-                'UPDATE item SET title = ?, description = ? WHERE listid = ? AND id = ?', (title, description, listid, itemid)
-            )
+            if doneornot == "completed":
+                completed = 1
+                db.execute(
+                    'UPDATE item SET title = ?, description = ?, completed = ? WHERE listid = ? AND id = ?', (title, description, completed, listid, itemid)
+                )
+            else:
+                completed = 0
+                db.execute(
+                    #'UPDATE item SET title = ?, description = ?, date_due = ? WHERE listid = ? AND id = ?', (title, description, date_due, listid, itemid)
+                    'UPDATE item SET title = ?, description = ?, completed = ? WHERE listid = ? AND id = ?', (title, description, completed, listid, itemid)
+                )
             db.commit()
             return redirect(url_for('todo.itemsindex', listid = listid))
     return render_template('todo/updateitem.html', item=item)

@@ -2,11 +2,12 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS list;
 DROP TABLE IF EXISTS item;
 DROP TABLE IF EXISTS tag;
+DROP TABLE IF EXISTS tags_items;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    firstname TEXT NOT NULL,
-    lastname TEXT NOT NULL,
+    /*firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,*/
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
 );
@@ -28,6 +29,7 @@ CREATE TABLE item (
     date_due DATE NOT NULL DEFAULT CURRENT_DATE,
     description TEXT,
     listid INTEGER,
+    completed INT NOT NULL DEFAULT 0,
     tagid INTEGER,
     FOREIGN KEY (listid) REFERENCES list (id) ON DELETE CASCADE,
     FOREIGN KEY (tagid) REFERENCES tag (tid) ON DELETE CASCADE
@@ -36,4 +38,11 @@ CREATE TABLE item (
 CREATE TABLE tag (
     tid INTEGER PRIMARY KEY AUTOINCREMENT,
     tagname TEXT NOT NULL
-)
+);
+
+CREATE TABLE tags_items (
+       item INTEGER,
+       tag INTEGER,
+       FOREIGN KEY (item) references item(id) ON DELETE CASCADE,
+       FOREIGN KEY (tag) references tag(tid) ON DELETE CASCADE
+);

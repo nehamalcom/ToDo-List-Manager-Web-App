@@ -10,13 +10,13 @@
     </head>
     <body>
     <div class="container">
-        <h1>Taskro - Your List and Project Manager!</h1>
+        <h1>Taskro - Your List Manager!</h1>
         <nav class="main-nav">
             <ul>
                 {% if g.user %}
                 <li><a href="{{ url_for('todo.index') }}">Home</a></li>
-                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-                <li><a href="{{ url_for('todo.index') }}">{{ g.user['username'] }}</a></li>
+                <li><a href="{{ url_for('todo.todayitems') }}">Today</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Log Out {{ g.user['username'] }}</a></li>
                 {% else %}
                 <li><a href="{{ url_for('auth.register') }}">Register</a></li>
                 <li><a href="{{ url_for('auth.login') }}">Log In</a></li>

@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 from todolist.auth import login_required
 from todolist.db import get_db
-import datetime
+import jsonify
 
 bp = Blueprint('todo', __name__)
 
@@ -17,7 +17,10 @@ def index():
     lists = db.execute(
         'SELECT l.id, author_id, created, title, body, username FROM list l JOIN user u ON l.author_id = u.id WHERE u.id = ? ORDER BY created DESC',(userid, )
     ).fetchall()
-    return render_template('todo/index.html', lists=lists)
+    if (request.accept_mimetypes.best == "application/json"):
+        return jsonify(dict(list = [dict(title = title, body=body) for _ , _ , _ , title, body, _ in lists]))
+    else:
+        return render_template('todo/index.html', lists=lists)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
@@ -115,6 +118,14 @@ def itemsindex(listid):
     ).fetchone()
     return render_template('todo/itemsindex.html', items=itemsoflist, listid=listid, listtitle=listtitle)
 
+@bp.route('/today')
+@login_required
+def todayitems():
+    db = get_db()
+    todayitems = db.execute(
+        "SELECT l.id AS listid, author_id, created, l.title AS listtitle, body, i.id AS itemid, i.title AS itemtitle, date_created, date_due, description, completed FROM list l JOIN item i ON listid = l.id WHERE date_due = DATE('now') ORDER BY date_due"
+    ).fetchall()
+    return render_template('todo/todayitems.html', items=todayitems, listid=0, listtitle="Today")
 
 @bp.route('/<int:listid>/createitem', methods=('GET', 'POST'))
 @login_required

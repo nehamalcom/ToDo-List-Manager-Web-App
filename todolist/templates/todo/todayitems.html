@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %} Due Today! {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% for item in items %}
+<article class="item">
+    <header>
+        <div>
+            <h1>{{ item['itemtitle'] }}</h1>
+            <div class="about">due on {{ item['date_due'].strftime('%Y-%m-%d') }}</div>
+            {%if item['completed'] == 1 %}
+            <span class="badge rounded-pill bg-success">Done</span>
+            {% else %}
+            <span class="badge rounded-pill bg-primary">Not Done</span>
+            {%endif%}
+        </div>
+        {% if g.user['id'] == item['author_id'] %}
+        <a class="action" href="{{ url_for('todo.updateitem', itemid=item['itemid'], listid=item['listid']) }}">Edit Item</a>
+        {% endif %}
+    </header>
+    <p class="body">{{ item['description'] }}</p>
+</article>
+{% if not loop.last %}
+<hr>
+{% endif %}
+{% endfor %}
+{% endblock %}
